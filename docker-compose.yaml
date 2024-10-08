@@ -1,0 +1,17 @@
+version: '3.1'
+
+services:
+  pgadmin4:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@sharedsvcs.com
+      - PGADMIN_DEFAULT_PASSWORD=tTvRPi8scnR3GksXVQEvProwsTZ
+      - PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION=True
+      - PGADMIN_CONFIG_LOGIN_BANNER="Authorised users only!"
+      - PGADMIN_CONFIG_CONSOLE_LOG_LEVEL=10
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    ports:
+      - "8080:80"
+volumes:
+  pgadmin-data:
