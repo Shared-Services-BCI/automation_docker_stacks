@@ -1,0 +1,25 @@
+version: '3.1'
+
+services:
+  msi_acp_file_outputter:
+    image: ghcr.io/shared-services-bci/msi_acp_file_outputter:main
+    container_name: msi_acp_file_outputter
+    environment:
+      - LOG_LEVEL=INFO
+      - RUNTIME_CRON=15 14 * * *
+      - CRON_OVERRIDE=NO
+      - SSMS_DRIVER=ODBC Driver 17 for SQL Server
+      - SSMS_SERVER=172.16.173.178
+      - SSMS_DB=ReportStaging
+      - SSMS_USER=ReportUser
+      - SSMS_PASS=9D,fj&
+      - MSI_TENANT_ID=183
+      - MSI_API_KEY=5re2lpAswoeXmWfXNa5lYZ2mcsA7TwrBzvYjhKGVEVqRgQ8nzrpZYy2aaRfDEk01
+      - MSI_COMPANY_ID=4
+      - FTP_LOCATION=ftp.buckeyehq.com
+      - FTP_USERNAME=MaxxSouthHSD
+      - FTP_PASSWORD=tnwZr7t!edyTH9^#
+      - FTP_PORT=22
+    restart: unless-stopped
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
