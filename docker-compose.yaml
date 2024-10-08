@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  buckeye_msi_report_daily:
+    image: ghcr.io/shared-services-bci/unified_msi_report:main
+    container_name: buckeye_msi_report_daily
+    environment:
+      - RUNTIME_CRON=0 13 * * *
+      - EMAIL_RECEIVERS="rstocchi@sharedsvcs.com,nocmgmt@sharedsvcs.com,MHorton@buckeyebroadband.com,wogburn@buckeyebroadband.com,tmartin@buckeyebroadband.com,TechOpsSupervisors@buckeyebroadband.com,tommy.taylor@sharedsvcs.com,svdipofi@sharedsvcs.com,BuckeyeBroadbandDamages@buckeyebroadband.com"
+      - FAILOVER_EMAIL_RECEIVERS="rstocchi@sharedsvcs.com,svdipofi@sharedsvcs.com,nocmgmt@sharedsvcs.com,networkoperationscenter@sharedsvcs.com"
+      - LOG_LEVEL=INFO
+      - COMPANY_NAME=Buckeye
+      - SQL_QUERY_ADJUSTED_DAYS=2
+    restart: unless-stopped
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+  maxxsouth_msi_report_daily:
+    image: ghcr.io/shared-services-bci/unified_msi_report:main
+    container_name: maxxsouth_msi_report_daily
+    environment:
+      - RUNTIME_CRON=30 13 * * *
+      - EMAIL_RECEIVERS="rstocchi@sharedsvcs.com,nocmgmt@sharedsvcs.com,tommy.taylor@sharedsvcs.com,svdipofi@sharedsvcs.com,hjharnegie@buckeyebroadband.com,Justin.Hicks@maxxsouth.com,tom.bailey@maxxsouth.com,Richard.McCain@maxxsouth.com"
+      - FAILOVER_EMAIL_RECEIVERS="rstocchi@sharedsvcs.com,svdipofi@sharedsvcs.com,nocmgmt@sharedsvcs.com,networkoperationscenter@sharedsvcs.com"
+      - LOG_LEVEL=INFO
+      - COMPANY_NAME=MaxxSouth
+      - SQL_QUERY_ADJUSTED_DAYS=2
+    restart: unless-stopped
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
