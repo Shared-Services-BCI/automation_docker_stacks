@@ -1,0 +1,71 @@
+version: '3.1'
+
+services:
+  xgs_10_gig_auto_ticketing_daily-buckeye:
+    image: ghcr.io/shared-services-bci/xgs_10_gig_auto_ticketing:main
+    container_name: xgs_10_gig_auto_ticketing_daily-buckeye
+    extra_hosts:
+      - "dc1c-rptsql01:172.16.173.27"
+    environment:
+      - LOG_LEVEL=INFO
+      - RUN_TIME=08:00
+      - SSMS_DRIVER=ODBC Driver 17 for SQL Server
+      - SSMS_SERVER=172.16.173.178
+      - SSMS_DB=ReportStaging
+      - SSMS_USER=ReportUser
+      - SSMS_PASS=9D,fj&
+      - SSMS_QUERY=SELECT * FROM [ReportStaging].[dbo].[XGS_10GB_Installs] WHERE CAST([Load_Date] AS DATE) = CAST(GETDATE() AS DATE) AND SYS_OOR=8158
+      - JIRA_URL=https://support-bci.atlassian.net
+      - JIRA_USERNAME=noctools@buckeyebroadband.com
+      - JIRA_PASSWORD=ATATT3xFfGF0AouWV5BvG9j6mMOXAZSCbI3Qw1q-tOtCFm0goFCwTASeg-DWRASLKbllSSTHd156UKy-U9TWUiI1V-fOvk200bPf8YqM9ayRmus1tKVSNVRBxSHFzOevZMSovUFAQFE4fbawSF9gf8pH3uJnhgaCCcHkZEwkInc8u7GUfpF_n5Q=B980DE6C
+      - WEBHOOK_URL=http://10.99.100.20:10086/custom_generic/
+      - PRIMARY_EMAIL_ADDRESS=nocreport@sharedsvcs.com
+      - PRIMARY_EMAIL_USERNAME=nocreport
+      - PRIMARY_EMAIL_PASSWORD=IqPsAdhtwDve77Sp
+      - PRIMARY_EMAIL_SERVER=mail.smtp2go.com
+      - PRIMARY_EMAIL_PORT=587
+      - SECONDARY_EMAIL_ADDRESS=nocalarms-staging@buckeye-express.com
+      - SECONDARY_EMAIL_USERNAME=nocalarms-staging@buckeye-express.com
+      - SECONDARY_EMAIL_PASSWORD=nocnoc3884
+      - SECONDARY_EMAIL_SERVER=mail.buckeye-express.com
+      - SECONDARY_EMAIL_PORT=587
+      - EMAIL_RECEIVERS=rstocchi@sharedsvcs.com,svdipofi@sharedsvcs.com,SS-IPServices@sharedsvcs.com
+      - EMAIL_SUBJECT_NO_ORDERS=XGS 10 Gig PON Orders
+      - EMAIL_MESSAGE_NO_ORDERS=There are no XGS 10 Gig PON Orders for today.
+    restart: unless-stopped
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+  xgs_10_gig_auto_ticketing_daily-maxxsouth:
+    image: ghcr.io/shared-services-bci/xgs_10_gig_auto_ticketing:main
+    container_name: xgs_10_gig_auto_ticketing_daily-maxxsouth
+    extra_hosts:
+      - "dc1c-rptsql01:172.16.173.27"
+    environment:
+      - LOG_LEVEL=INFO
+      - RUN_TIME=08:00
+      - SSMS_DRIVER=ODBC Driver 17 for SQL Server
+      - SSMS_SERVER=172.16.173.178
+      - SSMS_DB=ReportStaging
+      - SSMS_USER=ReportUser
+      - SSMS_PASS=9D,fj&
+      - SSMS_QUERY=SELECT * FROM [ReportStaging].[dbo].[XGS_10GB_Installs] WHERE CAST([Load_Date] AS DATE) = CAST(GETDATE() AS DATE) AND SYS_OOR=8282
+      - JIRA_URL=https://support-bci.atlassian.net
+      - JIRA_USERNAME=noctools@buckeyebroadband.com
+      - JIRA_PASSWORD=ATATT3xFfGF0AouWV5BvG9j6mMOXAZSCbI3Qw1q-tOtCFm0goFCwTASeg-DWRASLKbllSSTHd156UKy-U9TWUiI1V-fOvk200bPf8YqM9ayRmus1tKVSNVRBxSHFzOevZMSovUFAQFE4fbawSF9gf8pH3uJnhgaCCcHkZEwkInc8u7GUfpF_n5Q=B980DE6C
+      - WEBHOOK_URL=http://10.99.100.20:10086/custom_generic/
+      - PRIMARY_EMAIL_ADDRESS=nocreport@sharedsvcs.com
+      - PRIMARY_EMAIL_USERNAME=nocreport
+      - PRIMARY_EMAIL_PASSWORD=IqPsAdhtwDve77Sp
+      - PRIMARY_EMAIL_SERVER=mail.smtp2go.com
+      - PRIMARY_EMAIL_PORT=587
+      - SECONDARY_EMAIL_ADDRESS=nocalarms-staging@buckeye-express.com
+      - SECONDARY_EMAIL_USERNAME=nocalarms-staging@buckeye-express.com
+      - SECONDARY_EMAIL_PASSWORD=nocnoc3884
+      - SECONDARY_EMAIL_SERVER=mail.buckeye-express.com
+      - SECONDARY_EMAIL_PORT=587
+      - EMAIL_RECEIVERS=rstocchi@sharedsvcs.com,svdipofi@sharedsvcs.com,NetEng@maxxsouth.com
+      - EMAIL_SUBJECT_NO_ORDERS=XGS 10 Gig PON Orders
+      - EMAIL_MESSAGE_NO_ORDERS=There are no XGS 10 Gig PON Orders for today.
+    restart: unless-stopped
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
