@@ -1,0 +1,51 @@
+version: '3.1'
+
+services:
+  bandwidth_api_ingester_timescaledb:
+    image: ghcr.io/shared-services-bci/bandwidth_api_ingester:dev
+    container_name: bandwidth_api_ingester_timescaledb
+    environment:
+      - LOG_LEVEL=INFO
+      - RUNTIME_MINUTE_INTERVAL=2
+      - PURGE_JOB_MINUTE_INTERVAL=15
+      - BANDWIDTH_ACCOUNT_ID=5002635
+      - BANDWIDTH_USERNAME=ua-api
+      - BANDWIDTH_PASSWORD=eX2pjjN%1q15ecf/z
+      - DATABASE_HOST=10.99.100.42
+      - DATABASE_PORT=5433
+      - DATABASE_NAME=bandwidth_api
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=K3ZppUK2h4qdLkRF
+      - PURGE_DAY_INTERVAL=30
+    restart: unless-stopped
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    networks:
+      - bandwidth_network
+    depends_on:
+      - bandwidth_api_timescaledb
+
+  bandwidth_api_timescaledb:
+    image: timescale/timescaledb-ha:pg14-latest
+    container_name: bandwidth_api_timescaledb
+    environment:
+      - POSTGRES_PASSWORD=K3ZppUK2h4qdLkRF
+    volumes:
+      - bandwidth-api-timescaledb-data:/home/postgres/pgdata/data
+    ports:
+      - "5433:5432"
+    restart: unless-stopped
+    networks:
+      - bandwidth_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "revio_api"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s  
+
+volumes:
+  bandwidth-api-timescaledb-data:
+
+networks:
+  bandwidth_network:
