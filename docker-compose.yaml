@@ -1,0 +1,56 @@
+version: "3"
+
+services:
+  grafana-nois-post-gazzette-instance:
+    image: ghcr.io/shared-services-bci/grafana:nois-dev
+    container_name: grafana-nois-post-gazzette-instance
+    environment:
+      - GF_SERVER_DOMAIN="news.nois.cloud"
+      - GF_SERVER_ROOT_URL=https://news.nois.cloud
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+      - GF_AUTH_PUBLIC_MODE=false
+      - GF_AUTH_LDAP_ENABLED=true
+      - GF_ALLOW_SIGN_UP=true
+      - GF_SECURITY_PUBLIC_MODE=false
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+      - GF_INSTALL_PLUGINS=gapit-htmlgraphics-panel,yesoreyeram-infinity-datasource
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/opt/common-provisioning-assets/dashboards/landing-production.json
+      - GF_EXPLORE_ENABLED=false
+      - GF_HELP_ENABLED=false
+      - GF_PROFILE_ENABLED=true
+      - GF_NEWS_ENABLED=false
+      - GF_SNAPSHOTS_ENABLED=false
+      - GF_METRICS_ENABLED=false
+      - GF_PLUGINS_DISABLE_PLUGINS="alertlist,annolist,dashlist,news,table-old,traces,flamegraph,graphite,opentsdb,mssql,tempo,jaeger,zipkin,azuremonitor,cloudwatch,cloud-monitoring,parca,phlare,grafana-pyroscope-datasource"
+    volumes:
+      # Grafana data
+      - grafana-nois-post-gazzette-instance-data:/var/lib/grafana
+      # Customized images
+      - /opt/docker_apps/customer_data/post-gazzette/grafana/img/landing_bg.webp:/usr/share/grafana/public/img/landing_bg.webp
+      - /opt/docker_apps/customer_data/post-gazzette/grafana/img/Pittsburgh_Post_Gazette_Logo.png:/usr/share/grafana/public/img/whiteLabel_logo_bottom_left.png
+      - /opt/docker_apps/customer_data/post-gazzette/grafana/img/Pittsburgh_City_Paper_Logo.png:/usr/share/grafana/public/img/whiteLabel_logo_bottom_middle.png
+      - /opt/docker_apps/customer_data/post-gazzette/grafana/img/The_Blade_Logo.png:/usr/share/grafana/public/img/whiteLabel_logo_bottom_right.png
+      # Add the provisioning files
+      - /opt/docker_apps/customer_data/post-gazzette/grafana/provisioning/customer_preferences.json:/usr/share/grafana/public/customer_preferences.json
+      - /opt/docker_apps/customer_data/post-gazzette/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources/
+      - /opt/docker_apps/customer_data/post-gazzette/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards/
+      - /opt/docker_apps/customer_data/common-provisioning-assets:/opt/common-provisioning-assets/
+      # Add LDAP configuration
+      - /opt/docker_apps/customer_data/post-gazzette/grafana/ldap.toml:/etc/grafana/ldap.toml:ro
+    networks:
+      - nois-customer-instances
+    ports:
+      - 3005:3000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+
+volumes:
+  grafana-nois-post-gazzette-instance-data:
+
+networks:
+  nois-customer-instances:
