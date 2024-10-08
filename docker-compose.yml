@@ -1,28 +1,29 @@
-version: '3'
+version: "3"
 
 services:
-  nginx:
-    image: nginx
-    container_name: nginx
-    volumes:
-      - /mnt/ceph/docker-apps/nginx/conf.d:/etc/nginx/conf.d:ro
-      - /mnt/ceph/docker-apps/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - /mnt/ceph/docker-apps/nginx/ssl/reports.ua.sharedsvcs.com.cer:/etc/nginx/ssl/reports.ua.sharedsvcs.com.cer:ro
-      - /mnt/ceph/docker-apps/nginx/ssl/reports.ua.sharedsvcs.com.key:/etc/nginx/ssl/reports.ua.sharedsvcs.com.key:ro
-      - /mnt/ceph/docker-apps/nginx/ssl/wildcard.nois.cloud.cer:/etc/nginx/ssl/wildcard.nois.cloud.cer:ro
-      - /mnt/ceph/docker-apps/nginx/ssl/wildcard.nois.cloud.key:/etc/nginx/ssl/wildcard.nois.cloud.key:ro
-      - /mnt/ceph/docker-apps/nginx/logs:/etc/nginx/logs
-    ports:
-      - "80:80"
-      - "443:443"
-    restart: always
-    healthcheck:
-      test: ["CMD", "service", "nginx", "status"]
-      interval: 30s
-      timeout: 60s
-      retries: 5
-    deploy:
-      mode: replicated
-      replicas: 2
-      placement:
-        constraints: [node.role == manager]
+    autoheal:
+        container_name: autoheal
+        restart: always
+        environment:
+            - AUTOHEAL_CONTAINER_LABEL=all
+            - APPRISE_URL=http://10.99.100.42:8010/notify/0481f9f37364020768d08179fb48e6c96da1b022e2db4a5357fc21b29a89631c
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        image: willfarrell/autoheal
+
+    apprise-api:
+        # mailtos://sharedsvcs.com?user=nocreport&pass=IqPsAdhtwDve77Sp&smtp=mail.smtp2go.com&from=nocreport@sharedsvcs.com&to=NOCTools@buckeyebroadband.com
+        image: lscr.io/linuxserver/apprise-api:latest
+        container_name: apprise-api
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=America/Detroit
+        volumes:
+            - apprise-api:/config
+        ports:
+            - 8010:8000
+        restart: unless-stopped
+
+volumes:
+  apprise-api:
