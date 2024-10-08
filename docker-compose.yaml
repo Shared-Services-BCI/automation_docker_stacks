@@ -1,0 +1,67 @@
+version: '3.1'
+
+services:
+  countly_api_ingester_buckeye:
+    image: ghcr.io/shared-services-bci/countly_api_ingester:main
+    container_name: countly_api_ingester_buckeye
+    environment:
+      - COUNTLY_API_KEY=78ed7a8fd2b7f9a88f0aa0ce90dd6915
+      - COUNTLY_APP_ID=5e3bff461a5de90796aefec0
+      - DATABASE_HOST=10.99.100.42
+      - DATABASE_PORT=5434
+      - DATABASE_NAME=countly_api_buckeye
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=tcQ7wtBUfx7h2Bj8xJgeYV3VXXauzigN
+      - POLLING_INTERVAL=30
+    restart: unless-stopped
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    networks:
+      - countly_network
+    depends_on:
+      - countly_api_ingester_timescaledb
+      
+  countly_api_ingester_maxxsouth:
+    image: ghcr.io/shared-services-bci/countly_api_ingester:main
+    container_name: countly_api_ingester_maxxsouth
+    environment:
+      - COUNTLY_API_KEY=78ed7a8fd2b7f9a88f0aa0ce90dd6915
+      - COUNTLY_APP_ID=5e3bffabfc5a2c0797154bf5
+      - DATABASE_HOST=10.99.100.42
+      - DATABASE_PORT=5434
+      - DATABASE_NAME=countly_api_maxxsouth
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=tcQ7wtBUfx7h2Bj8xJgeYV3VXXauzigN
+      - POLLING_INTERVAL=30
+    restart: unless-stopped
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    networks:
+      - countly_network
+    depends_on:
+      - countly_api_ingester_timescaledb
+
+  countly_api_ingester_timescaledb:
+    image: timescale/timescaledb-ha:pg14-latest
+    container_name: countly_api_ingester_timescaledb
+    environment:
+      - POSTGRES_PASSWORD=tcQ7wtBUfx7h2Bj8xJgeYV3VXXauzigN
+    volumes:
+      - countly_api_ingester_timescaledb_data:/home/postgres/pgdata/data
+    ports:
+      - "5434:5432"
+    restart: unless-stopped
+    networks:
+      - countly_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "revio_api"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s  
+
+volumes:
+  countly_api_ingester_timescaledb_data:
+
+networks:
+  countly_network:
