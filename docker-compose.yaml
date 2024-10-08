@@ -1,0 +1,21 @@
+version: '3.1'
+
+services:
+  revio_api_database:
+    image: timescale/timescaledb-ha:pg14-latest
+    container_name: revio_timescaledb
+    environment:
+      - POSTGRES_PASSWORD=88KEJpUeYFq
+    volumes:
+      - revio_timescaledb:/home/postgres/pgdata/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "revio_api"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s  
+  
+volumes:
+  revio_timescaledb:
