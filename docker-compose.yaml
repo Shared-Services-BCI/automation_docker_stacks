@@ -1,0 +1,25 @@
+version: '3.1'
+
+services:
+  telesystem_nni_mysql:
+    image: mysql:latest
+    container_name: telesystem_nni_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: s98hKY8zdXLQq9tzfVCc
+      MYSQL_DATABASE: telesystem-nni
+      MYSQL_USER : nni
+      MYSQL_PASSWORD: zQtEoteWWxidZMh9eSmu
+    volumes:
+      - nni_mysql_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s  
+
+volumes:
+  nni_mysql_data:
