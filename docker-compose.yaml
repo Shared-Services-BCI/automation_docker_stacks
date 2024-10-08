@@ -1,0 +1,50 @@
+version: '3.1'
+
+services:
+  api_ingester:
+    image: ghcr.io/shared-services-bci/telax_api_ingester:main
+    container_name: api_ingester
+    environment:
+      - TELAX_POLLING_INTERVAL=300
+      - JIRA_POLLING_INTERVAL=300
+      - LOG_LEVEL=INFO
+      - DATABASE_HOST=api_mariadb
+      - DATABASE_NAME=telax_api
+      - DATABASE_USERNAME=telax_database_user
+      - DATABASE_PASSWORD=KuHJyAo24izBuZ
+      - TELAX_ACCOUNT_ID=SharedSvsNoc
+      - TELAX_USERNAME=apiuser@sharedsvcs.com
+      - TELAX_PASSWORD=T3l@x@piu$3r
+      - JIRA_URL=https://support-bci.atlassian.net
+      - JIRA_USERNAME=noctools@buckeyebroadband.com
+      - JIRA_PASSWORD=ATATT3xFfGF0ZQge_1B4WKKOsEnwBtU8sKm8RcyJ8nTzlbI2Vgu2PSEAnQMyKyovwjE_pxw_4Tn4j6U90QBs9H2ZA4P3zsnwK__uhYTacg-UnNnM-P8H1BpgYf__j0xgzysMw-4F80th_BfWItKTXqf-bxm1QMU0B3PjBeQixNCZxN84GZoUPlM=899F248B
+      - JIRA_PASSWORD_RESETS_JQL=project = NOC AND issuetype = "Password Reset" AND created >= -5d
+      - JIRA_IT_ESCALATIONS_JQL=project = ITSD AND issuetype = "NOC Escalation" AND createdDate >= -5d
+    restart: unless-stopped
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    depends_on:
+      - api_mariadb
+  api_mariadb:
+    image: mariadb:latest
+    container_name: api_mariadb
+    environment:
+      - MARIADB_USER=telax_database_user
+      - MARIADB_PASSWORD=KuHJyAo24izBuZ
+      - MARIADB_ROOT_PASSWORD=A2qXr9sNbY9KEkoBj
+      - MARIADB_DATABASE=telax_api
+      - TZ=Etc/UTC
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized" ]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+
+volumes:
+  mariadb-data:
