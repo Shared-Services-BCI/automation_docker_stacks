@@ -1,0 +1,16 @@
+version: '3.1'
+
+services:
+  grafana_reef_alerter:
+    image: ghcr.io/shared-services-bci/grafana_reef_alerter:main
+    container_name: grafana_reef_alerter
+    environment:
+      - GRAFANA_POLLING_INTERVAL=120
+      - GRAFANA_USERNAME=noctools@sharedsvcs.com
+      - GRAFANA_PASSWORD=SteveStop3884!!##
+      - GRAFANA_CLUSTER_NAMES=CN-NE-COS-1,CN-ET-COS-1
+      - LOG_LEVEL=INFO
+      - GRAFANA_DATA_MINUTES=2
+    restart: unless-stopped
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
