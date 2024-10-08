@@ -1,0 +1,22 @@
+version: '3.1'
+
+services:
+  supercapacitor_bms_timescaledb:
+    image: timescale/timescaledb-ha:pg14-latest
+    container_name: supercapacitor_bms_timescaledb
+    environment:
+      - POSTGRES_PASSWORD=ETCfS8M!8Bru83%z*vgr
+    volumes:
+      - supercapacitor_bms_timescaledb_data:/home/postgres/pgdata/data
+    ports:
+      - "5435:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "revio_api"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s  
+
+volumes:
+  supercapacitor_bms_timescaledb_data:
