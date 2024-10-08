@@ -1,0 +1,46 @@
+version: "3"
+
+services:
+  reports-ua-grafana:
+    image: grafana/grafana-oss:main-ubuntu
+    container_name: reports-ua-grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - reports-ua-grafana-data:/var/lib/grafana
+      - /opt/docker_apps/reports-ua-grafana/ldap.toml:/etc/grafana/ldap.toml:ro
+      - /opt/docker_apps/reports-ua-grafana/datasources/:/etc/grafana/provisioning/datasources/
+      - /opt/docker_apps/reports-ua-grafana/images/logo.svg:/usr/share/grafana/public/img/grafana_icon.svg:ro
+      - /opt/docker_apps/reports-ua-grafana/images/fav32.png:/usr/share/grafana/public/img/fav32.png:ro
+      - /opt/docker_apps/reports-ua-grafana/images/fav32.png:/usr/share/grafana/public/img/apple-touch-icon.png:ro
+      - /opt/docker_apps/reports-ua-grafana/images/login-background.svg:/usr/share/grafana/public/img/g8_login_dark.svg:ro
+      - /opt/docker_apps/reports-ua-grafana/images/login-background.svg:/usr/share/grafana/public/img/g8_login_light.svg:ro
+      - /opt/docker_apps/reports-ua-grafana/images/surge_logo.png:/usr/share/grafana/public/img/surge_logo.png:ro
+      - /opt/docker_apps/reports-ua-grafana/maps:/usr/share/grafana/public/maps:ro
+    environment:
+      - GF_SERVER_DOMAIN="reports.ua.sharedsvcs.com"
+      - GF_SERVER_ROOT_URL=https://reports.ua.sharedsvcs.com/
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+      - GF_AUTH_PUBLIC_MODE=false
+      - GF_AUTH_LDAP_ENABLED=true
+      - GF_ALLOW_SIGN_UP=true
+      - GF_SECURITY_PUBLIC_MODE=false
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+      - GF_INSTALL_PLUGINS=vonage-status-panel,grafana-clock-panel,knightss27-weathermap-panel,grafana-simple-json-datasource,marcusolsson-json-datasource,marcusolsson-csv-datasource,jdbranham-diagram-panel,williamvenner-timepickerbuttons-panel,isaozler-paretochart-panel,grafana-guidedtour-panel,gapit-htmlgraphics-panel,vaduga-mapgl-panel
+      - GF_SERVER_ENABLE_GZIP=true
+      - GF_EXPLORE_ENABLED=false
+      - GF_HELP_ENABLED=false
+      - GF_PROFILE_ENABLED=true
+      - GF_NEWS_NEWS_FEED_ENABLED=false
+      - GF_SNAPSHOTS_ENABLED=false
+      - GF_METRICS_ENABLED=false
+      - GF_USERS_AUTO_ASSIGN_ORG_ID=3
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+      
+volumes:
+  reports-ua-grafana-data:
