@@ -11,7 +11,7 @@ services:
       - BANDWIDTH_ACCOUNT_ID=5002635
       - BANDWIDTH_USERNAME=ua-api
       - BANDWIDTH_PASSWORD=eX2pjjN%1q15ecf/z
-      - DATABASE_HOST=10.99.100.42
+      - DATABASE_HOST=10.99.100.59
       - DATABASE_PORT=5433
       - DATABASE_NAME=bandwidth_api
       - DATABASE_USERNAME=postgres
