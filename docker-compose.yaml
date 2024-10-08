@@ -24,6 +24,9 @@ services:
       - bandwidth_network
     depends_on:
       - bandwidth_api_timescaledb
+    deploy:
+      mode: replicated
+      replicas: 1
 
   bandwidth_api_timescaledb:
     image: timescale/timescaledb-ha:pg14-latest
@@ -31,7 +34,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=K3ZppUK2h4qdLkRF
     volumes:
-      - bandwidth-api-timescaledb-data:/home/postgres/pgdata/data
+      - /mnt/app_shared_storage/bandwidth-api-timescaledb:/home/postgres/pgdata/data
     ports:
       - "5433:5432"
     restart: unless-stopped
@@ -42,10 +45,9 @@ services:
       interval: 30s
       timeout: 60s
       retries: 5
-      start_period: 80s  
-
-volumes:
-  bandwidth-api-timescaledb-data:
+    deploy:
+      mode: replicated
+      replicas: 1
 
 networks:
   bandwidth_network:
