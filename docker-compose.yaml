@@ -2,7 +2,7 @@ version: "3"
 
 services:
   nois-honeybakedham-instance:
-    image: ghcr.io/shared-services-bci/grafana:nois-dev
+    image: ghcr.io/shared-services-bci/grafana:nois-telesystem
     container_name: nois-honeybakedham-instance
     environment:
       - GF_SERVER_DOMAIN="hbh.nois.cloud"
