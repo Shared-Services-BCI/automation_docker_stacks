@@ -32,7 +32,9 @@ services:
       # Add LDAP configuration
       - /mnt/app_shared_storage/customer_data/nois-honeybakedham/grafana/ldap.toml:/etc/grafana/ldap.toml:ro
     ports:
-      - 3010:3000
+      - 3000:3000
+    networks:
+      - honeybakedham-network
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
@@ -40,5 +42,43 @@ services:
       timeout: 60s
       retries: 5
 
+  honeybakedham-meta-ingester:
+    image: ghcr.io/shared-services-bci/meta_csv_ingester:dev
+    container_name: Meta_CSV_Ingester
+    environment:
+      - DATABASE_HOST=honeybakedham-timescaledb
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=meta_call_data
+      - DATABASE_USERNAME=meta_user
+      - DATABASE_PASSWORD=K3ZppUK2h4qdLkRF
+      - RUNTIME_MINUTE_INTERVAL=2
+      - PBX_USERNAME=7007000010
+      - PBX_PASSWORD=9KtKi4wiDWmEA!U
+    restart: unless-stopped
+    networks:
+      - honeybakedham-network
+      
+  honeybakedham-timescaledb:
+    image: timescale/timescaledb-ha:pg14-latest
+    container_name: Meta_CSV_Ingester_Postgres
+    environment:
+      - POSTGRES_DB=meta_call_data
+      - POSTGRES_USER=meta_user
+      - POSTGRES_PASSWORD=K3ZppUK2h4qdLkRF
+    volumes:
+      - nois-honeybakedham-timescaledb-data:/home/postgres/pgdata/data
+    restart: unless-stopped
+    networks:
+      - honeybakedham-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "meta_call_data"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+
 volumes:
   nois-honeybakedham-instance-data:
+  nois-honeybakedham-timescaledb-data:
+
+networks:
+  honeybakedham-network:
