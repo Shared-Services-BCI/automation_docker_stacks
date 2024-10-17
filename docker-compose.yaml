@@ -21,6 +21,7 @@ services:
       - GF_SNAPSHOTS_ENABLED=false
       - GF_METRICS_ENABLED=false
       - GF_PLUGINS_DISABLE_PLUGINS="alertlist,annolist,dashlist,news,table-old,traces,flamegraph,graphite,opentsdb,mssql,tempo,jaeger,zipkin,azuremonitor,cloudwatch,cloud-monitoring,parca,phlare,grafana-pyroscope-datasource"
+      - GF_INSTALL_PLUGINS=gapit-htmlgraphics-panel
     volumes:
       # Grafana data
       - nois-honeybakedham-instance-data:/var/lib/grafana
