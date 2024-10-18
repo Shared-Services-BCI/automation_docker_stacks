@@ -13,7 +13,7 @@ services:
       - GF_ALLOW_SIGN_UP=true
       - GF_SECURITY_PUBLIC_MODE=false
       - GF_SECURITY_ALLOW_EMBEDDING=true
-      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/opt/common-provisioning-assets/dashboards/meta_call_data.json
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/opt/common-provisioning-assets/dashboards/landing-production.json
       - GF_EXPLORE_ENABLED=false
       - GF_HELP_ENABLED=false
       - GF_PROFILE_ENABLED=true
@@ -25,7 +25,11 @@ services:
     volumes:
       # Grafana data
       - nois-honeybakedham-instance-data:/var/lib/grafana
+      # Customized images
+      - /mnt/app_shared_storage/customer_data/nois-honeybakedham/grafana/img/landing_bg.webp:/usr/share/grafana/public/img/landing_bg.webp
+      - /mnt/app_shared_storage/customer_data/nois-honeybakedham/grafana/img/HBH_Logo.png:/usr/share/grafana/public/img/whiteLabel_logo_top_left.png
       # Add the provisioning files
+      - /mnt/app_shared_storage/customer_data/nois-honeybakedham/grafana/provisioning/customer_preferences.json:/usr/share/grafana/public/customer_preferences.json
       - /mnt/app_shared_storage/customer_data/nois-honeybakedham/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources/
       - /mnt/app_shared_storage/customer_data/nois-honeybakedham/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards/
       - /mnt/app_shared_storage/customer_data/common-provisioning-assets:/opt/common-provisioning-assets/
