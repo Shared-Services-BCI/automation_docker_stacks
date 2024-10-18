@@ -13,7 +13,7 @@ services:
       - GF_ALLOW_SIGN_UP=true
       - GF_SECURITY_PUBLIC_MODE=false
       - GF_SECURITY_ALLOW_EMBEDDING=true
-      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/opt/common-provisioning-assets/dashboards/landing-production.json
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/opt/common-provisioning-assets/dashboards/landings/landing-production.json
       - GF_EXPLORE_ENABLED=false
       - GF_HELP_ENABLED=false
       - GF_PROFILE_ENABLED=true
